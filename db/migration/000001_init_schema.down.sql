@@ -1,0 +1,7 @@
+-- Active: 1684737051366@@127.0.0.1@3306@simple_bank
+-- DROP TABLE IF EXISTS entries;
+-- DROP TABLE IF EXISTS transfers;
+-- DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS entries;
+DROP TABLE IF EXISTS transfers;
+DROP TABLE IF EXISTS accounts;
