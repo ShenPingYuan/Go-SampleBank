@@ -35,8 +35,16 @@ jobs:
           mysql root password: ${{ secrets.RootPassword }} # Required if "mysql user" is empty, default is empty. The root superuser password
           # mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
           # mysql password: ${{ secrets.DatabasePassword }} # Required if "mysql user" exists. The password for the "mysql user"
-      # - name: Build
-      #   run: go build -v ./...
+
+      -name: set up sqlc
+       run: |
+          curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | apt-key add -
+          echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/migrate.list
+          apt-get update
+          apt-get install -y migrate
+      
+      - name: run migration
+        run: make add-migrate
 
       - name: Test
         run: make test
