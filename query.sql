@@ -18,4 +18,3 @@ SET GLOBAL general_log = 'on'; --开启日志监控。
 SHOW VARIABLES LIKE 'general_log_file';
 
 SET GLOBAL general_log_file = '/var/log/mysql/general.log';
-
