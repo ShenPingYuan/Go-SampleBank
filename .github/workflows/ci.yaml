@@ -44,7 +44,7 @@ jobs:
       
       - name: run migration
         # run: make add-migrate
-        run: migrate -database "root:1230@tcp(localhost:3306)/simple_bank?parseTime=true" -path db/migration -verbose up
+        run: migrate -database "mysql://root:1230@tcp(localhost:3306)/simple_bank?parseTime=true" -path db/migration -verbose up
 
       - name: Test
         run: make test
