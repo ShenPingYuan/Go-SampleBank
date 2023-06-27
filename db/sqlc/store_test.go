@@ -142,7 +142,7 @@ func TestTransferTxDeadlock(t *testing.T) {
 	//assert.Error(err)
 	fmt.Println("转账前：", account1.Balance, account2.Balance)
 
-	n := 2
+	n := 10
 	amount := decimal.NewFromFloat(10)
 
 	errs := make(chan error)

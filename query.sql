@@ -1,5 +1,5 @@
--- Active: 1684737051366@@127.0.0.1@3306@simple_bank
-SELECT VERSION()
+
+SELECT VERSION();
 
 SELECT * FROM accounts;
 

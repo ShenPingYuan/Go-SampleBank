@@ -118,19 +118,36 @@ func (store *Store) TransferTx(ctx context.Context, param TransferTxParams) (Tra
 		result.ToEntry = toEntry
 
 		//更新账户余额
-		err = query.AddAccountBalance(ctx, AddAccountBalanceParams{
-			ID:     param.FromAccountID,
-			Amount: param.Amount.Neg(),
-		})
-		if err != nil {
-			return err
-		}
-		err = query.AddAccountBalance(ctx, AddAccountBalanceParams{
-			ID:     param.ToAccountID,
-			Amount: param.Amount,
-		})
-		if err != nil {
-			return err
+		if(param.FromAccountID<param.ToAccountID){
+			err = query.AddAccountBalance(ctx, AddAccountBalanceParams{
+				ID:     param.FromAccountID,
+				Amount: param.Amount.Neg(),
+			})
+			if err != nil {
+				return err
+			}
+			err = query.AddAccountBalance(ctx, AddAccountBalanceParams{
+				ID:     param.ToAccountID,
+				Amount: param.Amount,
+			})
+			if err != nil {
+				return err
+			}
+		}else{
+			err = query.AddAccountBalance(ctx, AddAccountBalanceParams{
+				ID:     param.ToAccountID,
+				Amount: param.Amount,
+			})
+			if err != nil {
+				return err
+			}
+			err = query.AddAccountBalance(ctx, AddAccountBalanceParams{
+				ID:     param.FromAccountID,
+				Amount: param.Amount.Neg(),
+			})
+			if err != nil {
+				return err
+			}
 		}
 		//查询更新后的账户
 		result.FromAccount, err = query.GetAccount(ctx, param.FromAccountID)

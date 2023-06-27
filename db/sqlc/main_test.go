@@ -51,10 +51,11 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatal("cannot create migration instance:", err)
 	}
+
 	//执行迁移
-	if err := migration.Up(); err != nil {
-		log.Fatal("cannot migrate db:", err)
-	}
+	migration.Down()
+	migration.Up()
+	//migration.Version()
 
 	//初始化Queries
 	testQueries = New(testDB)
