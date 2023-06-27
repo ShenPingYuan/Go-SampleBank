@@ -53,7 +53,7 @@ func TestMain(m *testing.M) {
 	}
 
 	//执行迁移
-	migration.Down()
+	//migration.Down()
 	migration.Up()
 	//migration.Version()
 
