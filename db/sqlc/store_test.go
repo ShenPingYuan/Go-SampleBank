@@ -182,6 +182,6 @@ func TestTransferTxDeadlock(t *testing.T) {
 	fmt.Println("转账后：", updatedAccount1.Balance, updatedAccount2.Balance)
 
 	assert.Equal(account1.Balance, updatedAccount1.Balance) //账户1扣除的金额
-	assert.NotEqual(account2.Balance, updatedAccount2.Balance) //账户2增加的金额
+	assert.Equal(account2.Balance, updatedAccount2.Balance) //账户2增加的金额
 
 }
