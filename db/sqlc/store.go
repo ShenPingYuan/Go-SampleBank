@@ -65,6 +65,7 @@ type TransferTxResult struct {
 func (store *Store) TransferTx(ctx context.Context, param TransferTxParams) (TransferTxResult, error) {
 	var result TransferTxResult
 	err := store.execTx(ctx, func(query *Queries) error {
+		//创建转账记录
 		createTransferResult, err := query.CreateTransfer(ctx, CreateTransferParams{
 			FromAccountID: param.FromAccountID,
 			ToAccountID:   param.ToAccountID,
@@ -83,6 +84,7 @@ func (store *Store) TransferTx(ctx context.Context, param TransferTxParams) (Tra
 		}
 		result.Transfer = transfer
 
+		//创建转账条目
 		createFromEntryResult, err := query.CreateEntry(ctx, CreateEntryParams{
 			AccountID: param.FromAccountID,
 			Amount:    param.Amount.Neg(),
@@ -117,8 +119,8 @@ func (store *Store) TransferTx(ctx context.Context, param TransferTxParams) (Tra
 		}
 		result.ToEntry = toEntry
 
-		//更新账户余额
-		if(param.FromAccountID<param.ToAccountID){
+		//更新账户余额（防止死锁）
+		if param.FromAccountID < param.ToAccountID {
 			err = query.AddAccountBalance(ctx, AddAccountBalanceParams{
 				ID:     param.FromAccountID,
 				Amount: param.Amount.Neg(),
@@ -133,7 +135,7 @@ func (store *Store) TransferTx(ctx context.Context, param TransferTxParams) (Tra
 			if err != nil {
 				return err
 			}
-		}else{
+		} else {
 			err = query.AddAccountBalance(ctx, AddAccountBalanceParams{
 				ID:     param.ToAccountID,
 				Amount: param.Amount,

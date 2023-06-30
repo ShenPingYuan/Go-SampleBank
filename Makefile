@@ -34,5 +34,8 @@ sqlc:
 test:
 	go test -v -cover ./...
 
-.PHONY: createdb dropdb add-migrate drop-migrate force create-migrate createmysql execmysql logsmysql sqlc test
+server:
+	go run main.go
+
+.PHONY: createdb dropdb add-migrate drop-migrate force create-migrate createmysql execmysql logsmysql sqlc test server
 

@@ -6,7 +6,7 @@ CREATE TABLE `accounts` (
   `currency` NVARCHAR(255) NOT NULL,
   -- mysql当前时区
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT `check_balance_positive` CHECK (`balance` > 0)
+  CONSTRAINT `check_balance_positive` CHECK (`balance` >= 0)
 );
 
 CREATE TABLE `entries` (
