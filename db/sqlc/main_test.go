@@ -8,6 +8,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/ShenPingYuan/go-webdemo/util"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/mysql"
@@ -19,16 +20,17 @@ var testQueries *Queries
 var testDB *sql.DB
 var testContext context.Context
 
-const (
-	dbDriver = "mysql"
-	dbSource = "root:1230@tcp(localhost:3306)/simple_bank?parseTime=true&multiStatements=true"
-)
-
 // 初始化数据库连接
 func TestMain(m *testing.M) {
 	var err error
+
+	config,err:=util.LoadConfig("../..")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+
 	//连接数据库
-	testDB, err = sql.Open(dbDriver, dbSource)
+	testDB, err = sql.Open(config.DBDriver, config.DBSource)
 	//判断是否连接成功
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)

@@ -36,7 +36,7 @@ func RandomOwner() string {
 
 // RandomMoney generates a random amount of money
 func RandomMoney() decimal.Decimal {
-	return decimal.NewFromInt(RandomInt(1, 1000))
+	return decimal.NewFromInt(RandomInt(1000, 10000))
 }
 
 // RandomCurrency generates a random currency code
