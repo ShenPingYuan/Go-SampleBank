@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	_ "github.com/golang/mock/mockgen/model"
 	"github.com/shopspring/decimal"
 )
 
