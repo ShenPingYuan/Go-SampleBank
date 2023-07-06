@@ -103,8 +103,8 @@ func (server *Server) deleteAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	_,err := server.store.DeleteAccount(ctx, req.Id)
-	if err==sql.ErrNoRows {
+	_, err := server.store.DeleteAccount(ctx, req.Id)
+	if err == sql.ErrNoRows {
 		http.Error(ctx.Writer, "account not found", http.StatusNotFound)
 		return
 	}

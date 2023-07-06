@@ -34,6 +34,10 @@ sqlc:
 test:
 	go test -v -cover ./...
 
+#mock
+mock:
+	mockgen -destination=db/mock/store.go -package=mockdb github.com/ShenPingYuan/go-webdemo/db/sqlc Store
+
 server:
 	go run main.go
 
