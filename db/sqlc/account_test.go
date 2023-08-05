@@ -10,8 +10,11 @@ import (
 )
 
 func createRandomAccountReturnId(t *testing.T) int64 {
+
+	user:=createRandomUser(t)
+
 	arg := CreateAccountParams{
-		Owner:    util.RandomOwner(),
+		OwnerID:  user.ID,
 		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
@@ -44,8 +47,11 @@ func TestGetLastInsertId(t *testing.T) {
 // 测试创建账户
 func TestCreateAccount(t *testing.T) {
 	assert := assert.New(t)
+
+	user:=createRandomUser(t)
+
 	arg := CreateAccountParams{
-		Owner:    util.RandomOwner(),
+		OwnerID:  user.ID,
 		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
@@ -68,7 +74,7 @@ func TestGetAccount(t *testing.T) {
 	assert.NotEmpty(account)
 	assert.NotZero(account.Balance)
 	assert.NotZero(account.ID)
-	assert.NotEmpty(account.Owner)
+	assert.NotEmpty(account.OwnerID)
 	assert.NotEmpty(account.Currency)
 	assert.NotZero(account.CreatedAt)
 	assert.Equal(id, account.ID)
@@ -140,7 +146,7 @@ func TestListAccounts(t *testing.T) {
 		assert.NotEmpty(account)
 		assert.NotZero(account.Balance)
 		assert.NotZero(account.ID)
-		assert.NotEmpty(account.Owner)
+		assert.NotEmpty(account.OwnerID)
 		assert.NotEmpty(account.Currency)
 		assert.NotZero(account.CreatedAt)
 	}

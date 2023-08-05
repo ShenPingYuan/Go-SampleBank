@@ -30,7 +30,17 @@ func RandomString(n int) string {
 }
 
 // RandomOwner generates a random owner name
-func RandomOwner() string {
+func RandomUsername() string {
+	return RandomString(6)
+}
+
+// RandomEmail generates a random email
+func RandomEmail() string {
+	return RandomString(6) + "@gmail.com"
+}
+
+// RandomHashedPassword generates a random password
+func RandomPassword() string {
 	return RandomString(6)
 }
 

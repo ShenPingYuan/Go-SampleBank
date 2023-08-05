@@ -31,7 +31,7 @@ func (q *Queries) AddAccountBalance(ctx context.Context, arg AddAccountBalancePa
 
 const createAccount = `-- name: CreateAccount :execresult
 INSERT INTO accounts (
-  owner,
+  owner_id,
   balance,
   currency
 ) VALUES (
@@ -40,13 +40,13 @@ INSERT INTO accounts (
 `
 
 type CreateAccountParams struct {
-	Owner    string          `json:"owner"`
+	OwnerID  int64           `json:"ownerID"`
 	Balance  decimal.Decimal `json:"balance"`
 	Currency string          `json:"currency"`
 }
 
 func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createAccount, arg.Owner, arg.Balance, arg.Currency)
+	return q.db.ExecContext(ctx, createAccount, arg.OwnerID, arg.Balance, arg.Currency)
 }
 
 const deleteAccount = `-- name: DeleteAccount :execresult
@@ -59,7 +59,7 @@ func (q *Queries) DeleteAccount(ctx context.Context, id int64) (sql.Result, erro
 }
 
 const getAccount = `-- name: GetAccount :one
-SELECT id, owner, balance, currency, created_at FROM accounts
+SELECT id, balance, currency, created_at, owner_id FROM accounts
 WHERE id = ? LIMIT 1
 `
 
@@ -68,16 +68,16 @@ func (q *Queries) GetAccount(ctx context.Context, id int64) (Account, error) {
 	var i Account
 	err := row.Scan(
 		&i.ID,
-		&i.Owner,
 		&i.Balance,
 		&i.Currency,
 		&i.CreatedAt,
+		&i.OwnerID,
 	)
 	return i, err
 }
 
 const getAccountForUpdate = `-- name: GetAccountForUpdate :one
-SELECT id, owner, balance, currency, created_at FROM accounts
+SELECT id, balance, currency, created_at, owner_id FROM accounts
 WHERE id = ? LIMIT 1
 FOR UPDATE
 `
@@ -87,10 +87,10 @@ func (q *Queries) GetAccountForUpdate(ctx context.Context, id int64) (Account, e
 	var i Account
 	err := row.Scan(
 		&i.ID,
-		&i.Owner,
 		&i.Balance,
 		&i.Currency,
 		&i.CreatedAt,
+		&i.OwnerID,
 	)
 	return i, err
 }
@@ -107,7 +107,7 @@ func (q *Queries) GetLastInsertId(ctx context.Context) (int64, error) {
 }
 
 const listAccounts = `-- name: ListAccounts :many
-SELECT id, owner, balance, currency, created_at FROM accounts
+SELECT id, balance, currency, created_at, owner_id FROM accounts
 ORDER BY id ASC
 LIMIT ? OFFSET ?
 `
@@ -129,10 +129,10 @@ func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]A
 		var i Account
 		if err := rows.Scan(
 			&i.ID,
-			&i.Owner,
 			&i.Balance,
 			&i.Currency,
 			&i.CreatedAt,
+			&i.OwnerID,
 		); err != nil {
 			return nil, err
 		}

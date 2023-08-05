@@ -15,6 +15,7 @@ type Querier interface {
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (sql.Result, error)
 	CreateEntry(ctx context.Context, arg CreateEntryParams) (sql.Result, error)
 	CreateTransfer(ctx context.Context, arg CreateTransferParams) (sql.Result, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (sql.Result, error)
 	DeleteAccount(ctx context.Context, id int64) (sql.Result, error)
 	DeleteEntry(ctx context.Context, id int64) (sql.Result, error)
 	DeleteTransfer(ctx context.Context, id int64) (sql.Result, error)
@@ -23,6 +24,8 @@ type Querier interface {
 	GetEntry(ctx context.Context, id int64) (Entry, error)
 	GetLastInsertId(ctx context.Context) (int64, error)
 	GetTransfer(ctx context.Context, id int64) (Transfer, error)
+	GetUserById(ctx context.Context, id int64) (User, error)
+	GetUserByUsername(ctx context.Context, username string) (User, error)
 	// 分页查询
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error)
 	ListEntries(ctx context.Context, arg ListEntriesParams) ([]Entry, error)

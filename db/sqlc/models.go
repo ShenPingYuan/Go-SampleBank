@@ -12,10 +12,10 @@ import (
 
 type Account struct {
 	ID        int64           `json:"id"`
-	Owner     string          `json:"owner"`
 	Balance   decimal.Decimal `json:"balance"`
 	Currency  string          `json:"currency"`
 	CreatedAt time.Time       `json:"createdAt"`
+	OwnerID   int64           `json:"ownerID"`
 }
 
 type Entry struct {
@@ -34,4 +34,14 @@ type Transfer struct {
 	// 只能是正数
 	Amount    decimal.Decimal `json:"amount"`
 	CreatedAt time.Time       `json:"createdAt"`
+}
+
+type User struct {
+	ID                int64     `json:"id"`
+	Username          string    `json:"username"`
+	HashedPassword    string    `json:"hashedPassword"`
+	Email             string    `json:"email"`
+	FullName          string    `json:"fullName"`
+	PasswordChangedAt time.Time `json:"passwordChangedAt"`
+	CreatedAt         time.Time `json:"createdAt"`
 }

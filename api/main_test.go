@@ -1,6 +1,7 @@
 package api
 
 import (
+	"os"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -9,5 +10,5 @@ import (
 // main
 func TestMain(m *testing.M) {
 	gin.SetMode(gin.TestMode)
-	m.Run()
+	os.Exit(m.Run())
 }

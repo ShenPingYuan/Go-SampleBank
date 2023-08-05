@@ -24,7 +24,7 @@ var testContext context.Context
 func TestMain(m *testing.M) {
 	var err error
 
-	config,err:=util.LoadConfig("../..")
+	config, err := util.LoadConfig("../..")
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
@@ -61,6 +61,18 @@ func TestMain(m *testing.M) {
 
 	//初始化Queries
 	testQueries = New(testDB)
+
+	//插入一行user
+	arg := CreateUserParams{
+		Username:       util.RandomUsername(),
+		HashedPassword: util.RandomPassword(),
+		Email:          util.RandomEmail(),
+		FullName:       util.RandomUsername(),
+	}
+	_, err = testQueries.CreateUser(context.Background(), arg)
+	if err != nil {
+		log.Fatal("cannot create user:", err)
+	}
 	//执行测试
 	os.Exit(m.Run())
 }
