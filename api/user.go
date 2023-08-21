@@ -7,6 +7,7 @@ import (
 	db "github.com/ShenPingYuan/go-webdemo/db/sqlc"
 	"github.com/ShenPingYuan/go-webdemo/util"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 type CreateUserRequest struct {
@@ -66,5 +67,41 @@ func (server *Server) createUser(ctx *gin.Context) {
 		CreatedAt:        user.CreatedAt,
 	}
 
+	ctx.JSON(http.StatusOK, rsp)
+}
+
+type LoginUserRequest struct {
+	Username string `json:"username" binding:"required,alphanum"`
+	Password string `json:"password" binding:"required,min=6"`
+}
+
+type LoginResponse struct {
+	AccessToken string `json:"access_token"`
+}
+
+func (server *Server) login(ctx *gin.Context) {
+	var request LoginUserRequest
+	if err := ctx.ShouldBindBodyWith(&request, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	user, err := server.store.GetUserByUsername(ctx, request.Username)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	if !util.CheckPassword(request.Password, user.HashedPassword) {
+		//密码错误
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	}
+	//生成token
+	token, err := server.tokenMaker.CreateToken(user.Username, server.config.AccessTokenDuration)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	rsp := LoginResponse{
+		AccessToken: token,
+	}
 	ctx.JSON(http.StatusOK, rsp)
 }

@@ -1,11 +1,17 @@
 package util
 
-import "github.com/spf13/viper"
+import (
+	"time"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
-	DBDriver      string `mapstructure:"DB_DRIVER" default:"mysql"`
-	DBSource      string `mapstructure:"DB_SOURCE"`
-	ServerAddress string `mapstructure:"SERVER_ADDRESS" default:":8080"`
+	DBDriver            string        `mapstructure:"DB_DRIVER" default:"mysql"`
+	DBSource            string        `mapstructure:"DB_SOURCE"`
+	ServerAddress       string        `mapstructure:"SERVER_ADDRESS" default:":8080"`
+	SymmetricKey        string        `mapstructure:"SYMMETRIC_KEY"`
+	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION" default:"15m"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

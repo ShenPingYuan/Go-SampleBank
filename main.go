@@ -6,7 +6,6 @@ import (
 	"github.com/ShenPingYuan/go-webdemo/api"
 	db "github.com/ShenPingYuan/go-webdemo/db/sqlc"
 	"github.com/ShenPingYuan/go-webdemo/util"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
@@ -23,7 +22,9 @@ func main() {
 	defer conn.Close()
 
 	store := db.NewStore(conn)
-	server := api.NewServer(store)
+
+	server := api.NewServer(config, store)
+
 	err = server.Start(config.ServerAddress)
 	if err != nil {
 		panic(err)
