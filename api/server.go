@@ -27,21 +27,10 @@ func NewServer(config util.Config, store db.Store) *Server {
 		tokenMaker: tokenMaker,
 		config:     config,
 	}
-
-	router := gin.Default()
-
 	binding.Validator.Engine().(*validator.Validate).RegisterValidation("currency", validCurrency)
 
-	router.POST("/accounts", server.createAccount)
-	router.GET("/accounts", server.getPagedAccounts)
-	router.GET("/accounts/:id", server.getAccount)
-	router.DELETE("/accounts/:id", server.deleteAccount)
+	server.setupRouter()
 
-	router.POST("/transfer", server.createTransfer)
-
-	router.POST("/users", server.createUser)
-
-	server.router = router
 	return server
 }
 

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
@@ -19,7 +20,7 @@ type CreateUserRequest struct {
 
 type ResponseUser struct {
 	Username         string    `json:"username"`
-	FullName         string    `json:"full_name"`
+	FullName         string    `json:"fullname"`
 	Email            string    `json:"email"`
 	PasswordChangeAt time.Time `json:"password_change_at"`
 	CreatedAt        time.Time `json:"created_at"`
@@ -77,6 +78,12 @@ type LoginUserRequest struct {
 
 type LoginResponse struct {
 	AccessToken string `json:"access_token"`
+	UserInfo    LoginUserDto
+}
+type LoginUserDto struct {
+	Username string `json:"username"`
+	FullName string `json:"fullname"`
+	Email    string `json:"email"`
 }
 
 func (server *Server) login(ctx *gin.Context) {
@@ -87,6 +94,10 @@ func (server *Server) login(ctx *gin.Context) {
 	}
 	user, err := server.store.GetUserByUsername(ctx, request.Username)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -100,8 +111,15 @@ func (server *Server) login(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+	rspUser := LoginUserDto{
+		Username: user.Username,
+		FullName: user.FullName,
+		Email:    user.Email,
+	}
+
 	rsp := LoginResponse{
 		AccessToken: token,
+		UserInfo:    rspUser,
 	}
 	ctx.JSON(http.StatusOK, rsp)
 }
