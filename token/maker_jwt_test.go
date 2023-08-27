@@ -22,10 +22,11 @@ func TestJWTMaker(t *testing.T) {
 	issueAt := time.Now()
 	expiredAt := issueAt.Add(duration)
 
+	userId := util.RandomInt(0, 10000)
 	username := util.RandomString(16)
 
 	// Create a token
-	token, err := maker.CreateToken(username, duration)
+	token, err := maker.CreateToken(userId, username, duration)
 	log.Println(token)
 	assert.NoError(err)
 	assert.NotEmpty(token)
@@ -51,10 +52,11 @@ func TestExpiredJWTToken(t *testing.T) {
 
 	duration := -time.Minute
 
+	userId := util.RandomInt(0, 10000)
 	username := util.RandomString(16)
 
 	// Create a token
-	token, err := maker.CreateToken(username, duration)
+	token, err := maker.CreateToken(userId, username, duration)
 	log.Println(token)
 	assert.NoError(err)
 	assert.NotEmpty(token)
@@ -67,11 +69,11 @@ func TestExpiredJWTToken(t *testing.T) {
 }
 
 func TestInvalidJWTAlgNone(t *testing.T) {
-	payload, err := NewPayload(util.RandomString(16), time.Minute)
+	payload, err := NewPayload(util.RandomInt(0, 10000), util.RandomString(16), time.Minute)
 	assert.NoError(t, err)
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodNone, payload)
-	token,err:=jwtToken.SignedString(jwt.UnsafeAllowNoneSignatureType)
+	token, err := jwtToken.SignedString(jwt.UnsafeAllowNoneSignatureType)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, jwtToken)
 

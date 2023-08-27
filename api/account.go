@@ -21,6 +21,7 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	//user := ctx.MustGet(currentUserKey).(*token.Payload)
 	arg := db.CreateAccountParams{
 		OwnerID:  req.OwnerID,
 		Currency: req.Currency,
@@ -71,6 +72,9 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		//http.NotFound(ctx.Writer, ctx.Request)
 		return
 	}
+
+	
+
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

@@ -2,10 +2,12 @@ package api
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"time"
 
 	db "github.com/ShenPingYuan/go-webdemo/db/sqlc"
+	"github.com/ShenPingYuan/go-webdemo/token"
 	"github.com/ShenPingYuan/go-webdemo/util"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -71,6 +73,40 @@ func (server *Server) createUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rsp)
 }
 
+type UserDetailDto struct {
+	ID       int64  `json:"id"`
+	Username string `json:"username"`
+	// HashedPassword    string    `json:"hashedPassword"`
+	Email             string    `json:"email"`
+	FullName          string    `json:"fullName"`
+	PasswordChangedAt time.Time `json:"passwordChangedAt"`
+	CreatedAt         time.Time `json:"createdAt"`
+}
+
+func (server *Server) getUserInfo(ctx *gin.Context) {
+	currentUser := ctx.MustGet(currentUserKey).(*token.Payload)
+
+	user, err := server.store.GetUserById(ctx, currentUser.UserId)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	rsp := UserDetailDto{
+		ID:                user.ID,
+		Username:          user.Username,
+		FullName:          user.FullName,
+		Email:             user.Email,
+		PasswordChangedAt: user.PasswordChangedAt,
+		CreatedAt:         user.CreatedAt,
+	}
+	ctx.JSON(http.StatusOK, rsp)
+}
+
 type LoginUserRequest struct {
 	Username string `json:"username" binding:"required,alphanum"`
 	Password string `json:"password" binding:"required,min=6"`
@@ -103,10 +139,11 @@ func (server *Server) login(ctx *gin.Context) {
 	}
 	if !util.CheckPassword(request.Password, user.HashedPassword) {
 		//密码错误
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("invalid user information")))
+		return
 	}
 	//生成token
-	token, err := server.tokenMaker.CreateToken(user.Username, server.config.AccessTokenDuration)
+	token, err := server.tokenMaker.CreateToken(user.ID, user.Username, server.config.AccessTokenDuration)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
