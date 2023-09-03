@@ -40,6 +40,11 @@ sqlc:
 #test
 test:
 	go test -v -cover ./...
+#build
+build-linux:
+	set GOOS=linux
+	set GOARCH=amd64
+	go build -o simplebank main.go
 
 #mock
 mock:
@@ -51,6 +56,11 @@ server:
 #docker
 docker-build:
 	docker build -t simplebank:latest .
+docker-build-pre:
+	set GOARCH=amd64
+	set GOOS=linux
+	go build -o simplebank main.go
+	docker build -t simplebank:latest -f ./Prebuild_Dockerfile .
 
 .PHONY: createdb dropdb add-migrate drop-migrate force create-migrate createmysql execmysql logsmysql sqlc test server
 

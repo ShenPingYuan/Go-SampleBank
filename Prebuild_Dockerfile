@@ -1,0 +1,7 @@
+# run stage
+FROM scratch
+WORKDIR /app
+COPY ./simplebank . 
+COPY *.env .
+EXPOSE 8080
+CMD ["/app/simplebank"]
