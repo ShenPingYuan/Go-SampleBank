@@ -62,5 +62,8 @@ docker-build-pre:
 	go build -o simplebank main.go
 	docker build -t simplebank:latest -f ./Prebuild_Dockerfile .
 
+docker-run:
+	docker run --name simplebank -p 8083:8083 simplebank
+
 .PHONY: createdb dropdb add-migrate drop-migrate force create-migrate createmysql execmysql logsmysql sqlc test server
 
