@@ -48,5 +48,9 @@ mock:
 server:
 	go run main.go
 
+#docker
+docker-build:
+	docker build -t simplebank:latest .
+
 .PHONY: createdb dropdb add-migrate drop-migrate force create-migrate createmysql execmysql logsmysql sqlc test server
 
