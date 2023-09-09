@@ -37,8 +37,9 @@ WORKDIR /app
 COPY --from=builder /app/main .
 
 COPY *.env .
+COPY db/migration ./db/migration
 # Expose any necessary ports (replace 8080 with the port your app listens on)
-EXPOSE 8083
+EXPOSE 8080
 
 # Define the command to run the application
 CMD ["./main"]

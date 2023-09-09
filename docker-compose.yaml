@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  db-mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=1230
+      - MYSQL_DATABASE=simple_bank
+      - MYSQL_USER=spy
+      - MYSQL_PASSWORD=Aa2439739932
+    restart: always
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 30s
+      retries: 10
+      start_period: 10s
+  
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8083:8080"
+    environment:
+      - DB_SOURCE=root:1230@tcp(db-mysql)/simple_bank?parseTime=true&multiStatements=true
+      - GIN_MODE=release
+    depends_on:
+      db-mysql:
+        condition: service_healthy
