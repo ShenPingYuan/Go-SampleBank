@@ -113,8 +113,9 @@ type LoginUserRequest struct {
 }
 
 type LoginResponse struct {
-	AccessToken string `json:"access_token"`
-	UserInfo    LoginUserDto
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	UserInfo     LoginUserDto
 }
 type LoginUserDto struct {
 	Username string `json:"username"`
@@ -143,7 +144,29 @@ func (server *Server) login(ctx *gin.Context) {
 		return
 	}
 	//生成token
-	token, err := server.tokenMaker.CreateToken(user.ID, user.Username, server.config.AccessTokenDuration)
+	token, err := server.tokenMaker.CreateAccessToken(user.ID, user.Username, server.config.AccessTokenDuration)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	refreshToken, err := server.tokenMaker.CreateRefreshToken(user.ID, server.config.RefreshTokenDuration)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	// 把refreshToken存到数据库
+	_, err = server.store.CreateSession(ctx, db.CreateSessionParams{
+		ID:           refreshToken.Id.String(),
+		UserID:       user.ID,
+		RefreshToken: refreshToken.RefreshToken,
+		UserAgent:    ctx.Request.UserAgent(), //TODO
+		ClientIp:     ctx.ClientIP(), //TODO
+		IsBlocked:    false,
+		ExpireTime:   refreshToken.ExpiredAt,
+		CreatedAt:    time.Now(),
+	})
+
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -155,8 +178,9 @@ func (server *Server) login(ctx *gin.Context) {
 	}
 
 	rsp := LoginResponse{
-		AccessToken: token,
-		UserInfo:    rspUser,
+		RefreshToken: refreshToken.RefreshToken,
+		AccessToken:  token,
+		UserInfo:     rspUser,
 	}
 	ctx.JSON(http.StatusOK, rsp)
 }

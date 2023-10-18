@@ -1,7 +1,7 @@
--- Active: 1685868021088@@localhost@3306@simple_bank
+-- Active: 1697358669446@@127.0.0.1@3306
 
 SELECT VERSION();
-
+CREATE DATABASE IF NOT EXISTS `simple_bank`;
 use simple_bank;
 show TABLES;
 SELECT * from schema_migrations;

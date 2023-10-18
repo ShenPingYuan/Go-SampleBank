@@ -7,11 +7,12 @@ import (
 )
 
 type Config struct {
-	DBDriver            string        `mapstructure:"DB_DRIVER" default:"mysql"`
-	DBSource            string        `mapstructure:"DB_SOURCE"`
-	ServerAddress       string        `mapstructure:"SERVER_ADDRESS" default:":8080"`
-	SymmetricKey        string        `mapstructure:"SYMMETRIC_KEY"`
-	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION" default:"15m"`
+	DBDriver             string        `mapstructure:"DB_DRIVER" default:"mysql"`
+	DBSource             string        `mapstructure:"DB_SOURCE"`
+	ServerAddress        string        `mapstructure:"SERVER_ADDRESS" default:":8080"`
+	SymmetricKey         string        `mapstructure:"SYMMETRIC_KEY"`
+	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION" default:"15m"`
+	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION" default:"24h"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

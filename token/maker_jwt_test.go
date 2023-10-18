@@ -26,13 +26,13 @@ func TestJWTMaker(t *testing.T) {
 	username := util.RandomString(16)
 
 	// Create a token
-	token, err := maker.CreateToken(userId, username, duration)
+	token, err := maker.CreateAccessToken(userId, username, duration)
 	log.Println(token)
 	assert.NoError(err)
 	assert.NotEmpty(token)
 
 	// Verify the token
-	payload, err := maker.VerifyToken(token)
+	payload, err := maker.VerifyAccessToken(token)
 	assert.NoError(err)
 	assert.NotEmpty(payload)
 
@@ -56,13 +56,13 @@ func TestExpiredJWTToken(t *testing.T) {
 	username := util.RandomString(16)
 
 	// Create a token
-	token, err := maker.CreateToken(userId, username, duration)
+	token, err := maker.CreateAccessToken(userId, username, duration)
 	log.Println(token)
 	assert.NoError(err)
 	assert.NotEmpty(token)
 
 	// Verify the token
-	payload, err := maker.VerifyToken(token)
+	payload, err := maker.VerifyAccessToken(token)
 	assert.Error(err)
 	assert.EqualError(err, ErrExpiredToken.Error())
 	assert.Empty(payload)
@@ -80,7 +80,7 @@ func TestInvalidJWTAlgNone(t *testing.T) {
 	maker, err := NewJWTMaker(util.RandomString(32))
 	assert.NoError(t, err)
 
-	payload, err = maker.VerifyToken(token)
+	payload, err = maker.VerifyAccessToken(token)
 	log.Println(err)
 	assert.Error(t, err)
 	assert.Empty(t, payload)
