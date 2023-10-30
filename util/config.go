@@ -9,7 +9,8 @@ import (
 type Config struct {
 	DBDriver             string        `mapstructure:"DB_DRIVER" default:"mysql"`
 	DBSource             string        `mapstructure:"DB_SOURCE"`
-	ServerAddress        string        `mapstructure:"SERVER_ADDRESS" default:":8080"`
+	HTTPServerAddress    string        `mapstructure:"HTTP_SERVER_ADDRESS" default:":8080"`
+	GRPCServerAddress    string        `mapstructure:"GRPC_SERVER_ADDRESS" default:":9090"`
 	SymmetricKey         string        `mapstructure:"SYMMETRIC_KEY"`
 	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION" default:"15m"`
 	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION" default:"24h"`

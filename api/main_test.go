@@ -14,7 +14,7 @@ func newTestServer(t *testing.T, store db.Store) *Server {
 	config := util.Config{
 		DBDriver:            "mysql",
 		DBSource:            "root:1230@tcp(localhost:3306)/simple_bank?parseTime=true&multiStatements=true",
-		ServerAddress:       ":8080",
+		HTTPServerAddress:   ":8080",
 		SymmetricKey:        util.RandomString(32),
 		AccessTokenDuration: time.Minute,
 	}

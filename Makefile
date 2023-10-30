@@ -65,5 +65,16 @@ docker-build-pre:
 docker-run:
 	docker run --name simplebank -p 8083:8083 simplebank
 
-.PHONY: createdb dropdb add-migrate drop-migrate force create-migrate createmysql execmysql logsmysql sqlc test server
+#proto
+proto:
+	protoc --proto_path=proto --go_out=protobuffer --go_opt=paths=source_relative \
+    --go-grpc_out=protobuffer --go-grpc_opt=paths=source_relative \
+    proto/*.proto
+
+#evans
+evans:
+	evans --host localhost --port 9090 -r repl
+
+
+.PHONY: createdb dropdb add-migrate drop-migrate force create-migrate createmysql execmysql logsmysql sqlc test server proto
 
